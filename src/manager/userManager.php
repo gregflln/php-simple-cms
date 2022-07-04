@@ -3,7 +3,6 @@
 namespace app\manager;
 
 use app\entities\user;
-use app\entities\role;
 use R;
 
 require_once 'rb.php';
@@ -22,7 +21,7 @@ class userManager
     {
         $newuser = R::dispense('users');
 
-        $newuser->role = 'pending';
+        $newuser->status = 'pending';
         $newuser->name = $user["name"];
         $newuser->lastname = $user["lastname"];
         $newuser->email = $user["email"];
@@ -50,6 +49,16 @@ class userManager
     public function getAll() : array
     {
         $users = R::findAll('users');
+        
+        foreach ($users as $index => $user) {
+            foreach($user as $key => $value)
+            {
+                if ($key == "access_token" || $key === "password")
+                {
+                    unset($users[$index][$key]);
+                }
+            }
+        }
         return $users;
     }
     public function get(int $id) : user
@@ -62,7 +71,7 @@ class userManager
             "access_token" => $user_data['access_token'],
             "lastname" => $user_data["lastname"],
             "email" => $user_data["email"],
-            "role" => $user_data['role'],
+            "status" => $user_data['status'],
             "password" => $user_data["password"]
         ]);
 
@@ -71,7 +80,7 @@ class userManager
     public function revoke(int $id) : void
     {
         $user = R::load('users', $id);
-        $user->role = "revoked";
+        $user->status = "revoked";
         R::store($user);
     }
 }

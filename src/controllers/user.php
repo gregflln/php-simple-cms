@@ -18,9 +18,10 @@ class user
         $this->container = $container;
         $this->user = new userManager();
     }
+    //subsribe endpoint
     public function subscribe(Request $request, Response $response, $args)
     {
-        $req = json_decode($request->getBody()->getContents());
+        $req = json::request($request);
         $this->user->create([
             "name" => $req->name,
             "lastname" => $req->lastname,
@@ -31,9 +32,10 @@ class user
             "ack" => true
         ]);
     }
+    //login
     public function login(Request $request, Response $response, $args)
     {
-        $req = json_decode($request->getBody()->getContents());
+        $req = json::request($request);
 
         $email = $req->email;
         $password = $req->password;
@@ -50,12 +52,20 @@ class user
             ]);
         }
     }
+    //user endpoint
     public function user(Request $request, Response $response, $args)
     {
         $id = $args['id'];
         $user = $this->user->get($id);
-        return json::response((array) $user);
+        return json::response([
+            "id" => $user->id,
+            "name" => $user->name,
+            "lastname" => $user->lastname,
+            "email" => $user->email,
+            "status" => $user->status
+        ]);
     }
+    //authorize endpoint
     public function authorize(Request $request, Response $response, $args)
     {
         $id = $args["id"];
@@ -66,6 +76,7 @@ class user
         ]);
 
     }
+    //get All
     public function getAll(Request $request, Response $response, $args)
     {
         $users = $this->user->getAll();

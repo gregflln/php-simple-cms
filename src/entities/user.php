@@ -2,8 +2,6 @@
 
 namespace app\entities;
 
-//use app\entities\role;
-
 class user
 {
     public ?int $id = null;
@@ -11,7 +9,7 @@ class user
     public ?string $lastname = null;
     public ?string $access_token = null;
     public ?string $password = null;
-    public ?string $role = null;
+    public ?string $status = null;
 
     public function __construct(array $data)
     {
