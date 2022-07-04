@@ -27,6 +27,9 @@ class user
             "email" => $req->email,
             "password" => $req->password
         ]);
+        return json::response([
+            "ack" => true
+        ]);
     }
     public function login(Request $request, Response $response, $args)
     {
@@ -34,19 +37,49 @@ class user
 
         $email = $req->email;
         $password = $req->password;
-        
-        return json::response($response, [
-            "email" => $email,
-            "password" => $password
-        ]);
+        $auth = $this->user->login($email, $password);
+
+        if ($auth)
+        {
+            return json::response([
+                "access_token" => $auth
+            ]);
+        } else {
+            return json::response([
+                "ack" => false
+            ]);
+        }
     }
-    public function auth(Request $request, Response $response, $args)
+    public function user(Request $request, Response $response, $args)
     {
-        return $response;
+        $id = $args['id'];
+        $user = $this->user->get($id);
+        return json::response((array) $user);
+    }
+    public function authorize(Request $request, Response $response, $args)
+    {
+        $id = $args["id"];
+        $user = $this->user->authorize($id);
+
+        return json::response([
+            "ack" => true
+        ]);
+
+    }
+    public function getAll(Request $request, Response $response, $args)
+    {
+        $users = $this->user->getAll();
+
+        return json::response($users);
     }
     public function revoke(Request $request, Response $response, $args)
     {
+        $id = $args['id'];
+        $this->user->revoke($id);
 
+        return json::response([
+            "ack" => true
+        ]);
     }
     public function setAdmin(Request $request, Response $response, $args)
     {

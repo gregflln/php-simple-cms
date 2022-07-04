@@ -17,5 +17,7 @@ $app = AppFactory::create();
 
 $app->post('/login', [controllers\user::class, 'login']);
 $app->post('/subscribe', [controllers\user::class, 'subscribe']);
-
+$app->get('/users', [controllers\user::class, 'getAll']);
+$app->post('/user/{id}', [controllers\user::class, 'user']);
+$app->post('/user/auth/{id}', [controllers\user::class, 'authorize']);
 $app->run();

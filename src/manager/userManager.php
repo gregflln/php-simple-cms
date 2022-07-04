@@ -22,33 +22,56 @@ class userManager
     {
         $newuser = R::dispense('users');
 
-        $newuser->role = role::pending;
-        $newuser->name = $user->name;
-        $newuser->email = $user->email;
-        $newuser->lastname = $user->lastname;
-        $newuser->password = hash('sha256', $user->password);
+        $newuser->role = 'pending';
+        $newuser->name = $user["name"];
+        $newuser->lastname = $user["lastname"];
+        $newuser->email = $user["email"];
+        $newuser->password = hash('sha256', $user["password"]);
 
         R::store($newuser);
     }
     public function authorize(int $id) : void
     {
-        $user = R::dispense('users', $id);
-        $user->access_token = \bin2hex(random_bytes(32));
+        $user = R::load('users', $id);
+        $user->access_token = \bin2hex(openssl_random_pseudo_bytes(32));
+        $user->role = "user";
         R::store($user);
+    }
+    public function login(string $email, string $password) : string | bool
+    {
+        $hash_password = hash('sha256', $password);
+        $user = R::findOne('users', "email = ?", [ $email ]);
+
+        if ($hash_password === $user['password'])
+        return $user["access_token"];
+        else
+        return false;
     }
     public function getAll() : array
     {
-        $users = R::dispenseAll('users');
+        $users = R::findAll('users');
         return $users;
     }
-    public function get(int $id) : User
+    public function get(int $id) : user
     {
-        $user = R::dispense('users', $id);
+        $user_data = R::load('users', $id);
+
+        $user = new user([
+            "id" => $user_data->id,
+            "name" => $user_data["name"],
+            "access_token" => $user_data['access_token'],
+            "lastname" => $user_data["lastname"],
+            "email" => $user_data["email"],
+            "role" => $user_data['role'],
+            "password" => $user_data["password"]
+        ]);
+
         return $user;
     }
     public function revoke(int $id) : void
     {
-        $user = R::dispense('users', $id);
-        $user->role = role::revoke;
+        $user = R::load('users', $id);
+        $user->role = "revoked";
+        R::store($user);
     }
 }

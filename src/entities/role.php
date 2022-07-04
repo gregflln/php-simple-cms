@@ -1,9 +1,11 @@
 <?php
 
-class role
+namespace app\entities;
+
+enum role
 {
-    const admin = "admin";
-    const pending = "pending";
-    const user = "user";
-    const revoked = "revoked";
+    case admin;
+    case pending;
+    case user;
+    case revoked;
 }
