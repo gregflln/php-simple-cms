@@ -92,6 +92,7 @@ class user
 
         return json::response($users);
     }
+    //revoke
     public function revoke(Request $request, Response $response, $args) : Response
     {
         $id = $args['id'];
@@ -103,6 +104,11 @@ class user
     }
     public function setAdmin(Request $request, Response $response, $args) : Response
     {
+        $id = $args['id'];
+        $this->user->setAdmin($id);
 
+        return json::response([
+            "ack" => true
+        ]);
     }
 }

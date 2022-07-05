@@ -95,4 +95,10 @@ class userManager
         $user->status = "revoked";
         R::store($user);
     }
+    public function setAdmin(int $id) : void
+    {
+        $user = R::load('users', $id);
+        $user->status = "admin";
+        R::store($user);
+    }
 }
