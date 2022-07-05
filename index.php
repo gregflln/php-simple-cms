@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Routing\RouteCollectorProxy;
 use Slim\Factory\AppFactory;
 use app\controllers;
 use DI\Container;
@@ -17,13 +18,17 @@ $app = AppFactory::create();
 $app->post('/login', [controllers\user::class, 'login']);
 $app->post('/subscribe', [controllers\user::class, 'subscribe']);
 
-//users
-$app->get('/users', [controllers\user::class, 'getAll']);
-$app->post('/user/{id}', [controllers\user::class, 'user']);
+$app->group('/api', function (RouteCollectorProxy $group) {
 
-//admin
-$app->post('/authorize/{id}', [controllers\user::class, 'authorize']);
-$app->post('/setadmin/{id}', [controllers\user::class, 'setAdmin']);
-$app->post('/revoke/{id}', [controllers\user::class, 'revoke']);
+    //users
+    $group->get('/users', [controllers\user::class, 'getAll']);
+    $group->post('/user/{id}', [controllers\user::class, 'user']);
+
+    //admin
+    $group->post('/authorize/{id}', [controllers\user::class, 'authorize']);
+    $group->post('/setadmin/{id}', [controllers\user::class, 'setAdmin']);
+    $group->post('/revoke/{id}', [controllers\user::class, 'revoke']);
+
+});
 
 $app->run();

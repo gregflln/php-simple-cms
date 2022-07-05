@@ -19,26 +19,34 @@ class user
         $this->user = new userManager();
     }
     //subsribe endpoint
-    public function subscribe(Request $request, Response $response, $args)
+    public function subscribe(Request $request, Response $response, $args) : Response
     {
         $req = json::request($request);
+        
+        if (!$req)
+        return $response->withStatus(500);
+
         $this->user->create([
-            "name" => $req->name,
-            "lastname" => $req->lastname,
-            "email" => $req->email,
-            "password" => $req->password
+            "name" => $req['name'],
+            "lastname" => $req["lastname"],
+            "email" => $req["email"],
+            "password" => $req["password"]
         ]);
         return json::response([
             "ack" => true
         ]);
     }
     //login
-    public function login(Request $request, Response $response, $args)
+    public function login(Request $request, Response $response, $args) : Response
     {
         $req = json::request($request);
 
-        $email = $req->email;
-        $password = $req->password;
+        if (!$req)
+        return $response->withStatus(500);
+
+        $email = $req['email'];
+        $password = $req['password'];
+
         $auth = $this->user->login($email, $password);
 
         if ($auth)
@@ -53,10 +61,11 @@ class user
         }
     }
     //user endpoint
-    public function user(Request $request, Response $response, $args)
+    public function user(Request $request, Response $response, $args) : Response
     {
         $id = $args['id'];
         $user = $this->user->get($id);
+
         return json::response([
             "id" => $user->id,
             "name" => $user->name,
@@ -66,7 +75,7 @@ class user
         ]);
     }
     //authorize endpoint
-    public function authorize(Request $request, Response $response, $args)
+    public function authorize(Request $request, Response $response, $args) : Response
     {
         $id = $args["id"];
         $user = $this->user->authorize($id);
@@ -77,13 +86,13 @@ class user
 
     }
     //get All
-    public function getAll(Request $request, Response $response, $args)
+    public function getAll(Request $request, Response $response, $args) : Response
     {
         $users = $this->user->getAll();
 
         return json::response($users);
     }
-    public function revoke(Request $request, Response $response, $args)
+    public function revoke(Request $request, Response $response, $args) : Response
     {
         $id = $args['id'];
         $this->user->revoke($id);
@@ -92,7 +101,7 @@ class user
             "ack" => true
         ]);
     }
-    public function setAdmin(Request $request, Response $response, $args)
+    public function setAdmin(Request $request, Response $response, $args) : Response
     {
 
     }

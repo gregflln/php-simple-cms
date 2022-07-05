@@ -7,16 +7,9 @@ use Slim\Psr7\Response;
 
 class json
 {
-    public static function request(Request $request) : array | false
+    public static function request(Request $request) : array
     {
-        try
-        {
-            return json_decode($request->getBody()->getContents());
-
-        } catch (\Throwable $th)
-        {
-            return false;
-        }
+        return json_decode($request->getBody()->getContents(), true);
     }
     public static function response(array $data) : Response
     {

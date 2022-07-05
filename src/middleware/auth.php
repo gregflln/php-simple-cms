@@ -7,7 +7,7 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
 use R;
 
-require_once '../manager/rb.php';
+require_once __DIR__ . '/../rb.php';
 
 class auth
 {
@@ -16,7 +16,12 @@ class auth
         $response = $handler->handle($request);
         $auth_header = $request->getHeader("Authorization");
         $access_token = ltrim($auth_header, 7);
-        
+
+        R::setup('mysql:host=localhost;dbname=pleyades','root','');
+
+        $user = R::findOne('users', 'access_token = ?', [$access_token]);
+        echo $user->status;
+
         return $response;
     }
 }

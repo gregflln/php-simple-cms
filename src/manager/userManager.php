@@ -5,7 +5,7 @@ namespace app\manager;
 use app\entities\user;
 use R;
 
-require_once 'rb.php';
+require_once __DIR__ . '/../rb.php';
 //user uses cases
 //this user top level API
 
@@ -33,7 +33,7 @@ class userManager
     {
         $user = R::load('users', $id);
         $user->access_token = \bin2hex(openssl_random_pseudo_bytes(32));
-        $user->role = "user";
+        $user->status = "user";
         R::store($user);
     }
     public function login(string $email, string $password) : string | bool
