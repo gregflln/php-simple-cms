@@ -61,7 +61,7 @@ class user
         }
     }
     //user endpoint
-    public function user(Request $request, Response $response, $args) : Response
+    public function get_user(Request $request, Response $response, $args) : Response
     {
         $id = $args['id'];
         $user = $this->user->get($id);
@@ -75,18 +75,18 @@ class user
         ]);
     }
     //authorize endpoint
-    public function authorize(Request $request, Response $response, $args) : Response
+    public function set_as_user(Request $request, Response $response, $args) : Response
     {
         $id = $args["id"];
-        $user = $this->user->authorize($id);
-
+        $this->user->changeSatus($id, "user");
+        $this->user->generate_token($id);
         return json::response([
             "ack" => true
         ]);
 
     }
     //get All
-    public function getAll(Request $request, Response $response, $args) : Response
+    public function get_users(Request $request, Response $response, $args) : Response
     {
         $users = $this->user->getAll();
 
@@ -96,17 +96,17 @@ class user
     public function revoke(Request $request, Response $response, $args) : Response
     {
         $id = $args['id'];
-        $this->user->revoke($id);
-
+        $this->user->changeSatus($id, "revoked");
+        $this->user->generate_token($id);
         return json::response([
             "ack" => true
         ]);
     }
-    public function setAdmin(Request $request, Response $response, $args) : Response
+    public function set_as_admin(Request $request, Response $response, $args) : Response
     {
         $id = $args['id'];
-        $this->user->setAdmin($id);
-
+        $this->user->changeSatus($id, "admin");
+        $this->user->generate_token($id);
         return json::response([
             "ack" => true
         ]);

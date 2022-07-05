@@ -30,15 +30,14 @@ class userManager
 
         R::store($newuser);
     }
-
-    public function authorize(int $id) : void
+    //regenerate new token and invdalidate previously issued tokens
+    public function generate_token(int $id)
     {
         $user = R::load('users', $id);
-        $user->access_token = \bin2hex(openssl_random_pseudo_bytes(32));
-        $user->status = "user";
+        $user->access_token = bin2hex(openssl_random_pseudo_bytes(32));
         R::store($user);
     }
-
+    //check credentials and give access_token
     public function login(string $email, string $password) : string | bool
     {
         $hash_password = hash('sha256', $password);
@@ -55,7 +54,7 @@ class userManager
         else
             return false;
     }
-
+    //retrieve all users
     public function getAll() : array
     {
         $users = R::findAll('users');
@@ -65,13 +64,14 @@ class userManager
             {
                 if ($key == "access_token" || $key === "password")
                 {
+                    //remove access-token && password fields from DB response
                     unset($users[$index][$key]);
                 }
             }
         }
         return $users;
     }
-
+    //get user data, sensitive data include
     public function get(int $id) : user
     {
         $user_data = R::load('users', $id);
@@ -88,17 +88,11 @@ class userManager
 
         return $user;
     }
-
-    public function revoke(int $id) : void
+    //change status of user [ id ] to status
+    public function changeSatus(int $id, string $to_status) : void
     {
         $user = R::load('users', $id);
-        $user->status = "revoked";
-        R::store($user);
-    }
-    public function setAdmin(int $id) : void
-    {
-        $user = R::load('users', $id);
-        $user->status = "admin";
+        $user->status = $to_status;
         R::store($user);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+//use Psr\Http\Message\ResponseInterface as Response;
+//use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Factory\AppFactory;
 use app\controllers;
@@ -22,12 +22,12 @@ $app->post('/subscribe', [controllers\user::class, 'subscribe']);
 $app->group('/api', function (RouteCollectorProxy $group) {
 
     //users
-    $group->get('/users', [controllers\user::class, 'getAll']);
-    $group->get('/user/{id}', [controllers\user::class, 'user']);
+    $group->get('/users', [controllers\user::class, 'get_users']);
+    $group->get('/user/{id}', [controllers\user::class, 'get_user']);
 
     //admin
-    $group->post('/authorize/{id}', [controllers\user::class, 'authorize']);
-    $group->post('/setadmin/{id}', [controllers\user::class, 'setAdmin']);
+    $group->post('/set_as_user/{id}', [controllers\user::class, 'set_as_user']);
+    $group->post('/set_as_admin/{id}', [controllers\user::class, 'set_as_admin']);
     $group->post('/revoke/{id}', [controllers\user::class, 'revoke']);
 
 });
