@@ -18,11 +18,12 @@ $app = AppFactory::create();
 $app->post('/login', [controllers\user::class, 'login']);
 $app->post('/subscribe', [controllers\user::class, 'subscribe']);
 
+//user auth
 $app->group('/api', function (RouteCollectorProxy $group) {
 
     //users
     $group->get('/users', [controllers\user::class, 'getAll']);
-    $group->post('/user/{id}', [controllers\user::class, 'user']);
+    $group->get('/user/{id}', [controllers\user::class, 'user']);
 
     //admin
     $group->post('/authorize/{id}', [controllers\user::class, 'authorize']);

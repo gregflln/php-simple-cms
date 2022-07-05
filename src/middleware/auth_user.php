@@ -9,7 +9,7 @@ use R;
 
 require_once __DIR__ . '/../rb.php';
 
-class auth
+class auth_user
 {
     public function __invoke(Request $request, RequestHandler $handler): Response
     {
@@ -20,8 +20,12 @@ class auth
         R::setup('mysql:host=localhost;dbname=pleyades','root','');
 
         $user = R::findOne('users', 'access_token = ?', [$access_token]);
-        echo $user->status;
+        //check user exist
+        if ($user->id === 0) return $response->withStatus(401);
+        //status check
+        if ($user->status === 'user' || 'admin') return $response;
 
         return $response;
+
     }
 }

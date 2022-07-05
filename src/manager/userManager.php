@@ -17,6 +17,7 @@ class userManager
     {
         R::setup('mysql:host=localhost;dbname=pleyades','root','');
     }
+
     public function create(array $user) : void
     {
         $newuser = R::dispense('users');
@@ -29,6 +30,7 @@ class userManager
 
         R::store($newuser);
     }
+
     public function authorize(int $id) : void
     {
         $user = R::load('users', $id);
@@ -36,16 +38,24 @@ class userManager
         $user->status = "user";
         R::store($user);
     }
+
     public function login(string $email, string $password) : string | bool
     {
         $hash_password = hash('sha256', $password);
         $user = R::findOne('users', "email = ?", [ $email ]);
 
-        if ($hash_password === $user['password'])
-        return $user["access_token"];
+        //password match && access_token exist
+        if (
+            $hash_password === $user->password &&
+            $user->access_token !== null &&
+            $user->status !== 'pending' &&
+            $user->status !== 'revoked'
+            )
+            return $user->access_token;
         else
-        return false;
+            return false;
     }
+
     public function getAll() : array
     {
         $users = R::findAll('users');
@@ -61,6 +71,7 @@ class userManager
         }
         return $users;
     }
+
     public function get(int $id) : user
     {
         $user_data = R::load('users', $id);
@@ -77,6 +88,7 @@ class userManager
 
         return $user;
     }
+
     public function revoke(int $id) : void
     {
         $user = R::load('users', $id);
