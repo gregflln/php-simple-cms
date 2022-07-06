@@ -4,18 +4,22 @@ namespace app\entities;
 
 class user
 {
-    public ?int $id = null;
-    public ?string $name = null;
-    public ?string $lastname = null;
-    public ?string $access_token = null;
-    public ?string $password = null;
-    public ?string $status = null;
+    public int $id;
+    public string $name;
+    public string $lastname;
+    public string $email;
+    public string $password;
+    public string $access_token;
 
-    public function __construct(array $data)
+    public function __construct(int $id, string $name, string $lastname, string $email, string $password, string $access_token)
     {
-        foreach ($data as $key => $value)
-        {
-            $this->$key = $value;
-        }
+        $this->id = $id;
+        $this->name = $name;
+        $this->lastname = $lastname;
+        $this->email = $email;
+        $this->password = $password;
+        $this->access_token = $access_token;
+
     }
+    
 }
